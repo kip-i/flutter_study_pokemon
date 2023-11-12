@@ -57,7 +57,8 @@ class MyHomePage extends StatelessWidget {
               backgroundColor: Colors.yellow,
               label: Text('electric'),
             ),
-          ])
+          ],
+        )
       ),
     );
   }
