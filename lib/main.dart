@@ -24,7 +24,9 @@ class MyHomePage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       body: Center(
-        child: Column(children:[Image.network(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children:[Image.network(
           "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/25.png",
           height: 100,
           width: 100,
