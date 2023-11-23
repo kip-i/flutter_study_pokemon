@@ -104,18 +104,24 @@ class _SettingsState extends State<Settings> {
 }
 
 class ThemeModeSelectionPage extends StatefulWidget {
-  final ThemeMode init;
   const ThemeModeSelectionPage({
       Key? key,
       required this.init,
     }) : super(key: key);
+  final ThemeMode init;
 
   @override
   _ThemeModeSelectionPageState createState() => _ThemeModeSelectionPageState();
 }
 
 class _ThemeModeSelectionPageState extends State<ThemeModeSelectionPage> {
-  ThemeMode _current = ThemeMode.system;
+  late ThemeMode _current;
+  @override
+  void initState() {
+    super.initState();
+    _current = widget.init;
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -127,7 +133,7 @@ class _ThemeModeSelectionPageState extends State<ThemeModeSelectionPage> {
               leading: IconButton(
                 icon: const Icon(Icons.arrow_back),
                 onPressed: () => Navigator.pop<ThemeMode>(
-                    context, ThemeMode.light), // 暫定でlight
+                    context, _current), 
               ),
             ),
             RadioListTile<ThemeMode>(
