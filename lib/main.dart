@@ -7,12 +7,15 @@ void main() {
 
 class MyApp extends StatelessWidget {
   const MyApp({Key? key}) : super(key: key);
+
   @override
   Widget build(BuildContext context) {
+    ThemeMode mode = ThemeMode.light;
     return MaterialApp(
       title: 'Pokemon Flutter',
       theme: ThemeData.light(),
       darkTheme: ThemeData.dark(),
+      themeMode: mode,
       home: const TopPage(),
     );
   }
@@ -30,11 +33,7 @@ class _TopPageState extends State<TopPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: SafeArea(
-        child: ListView.builder(
-          padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 16),
-          itemCount: 1010,
-          itemBuilder: (context, index) => PokeListItem(index: index),
-        ),
+        child: currentbnb == 0 ? const PokeList() : const Settings(),
       ),
       bottomNavigationBar: BottomNavigationBar(
         onTap: (index) => {
@@ -42,6 +41,7 @@ class _TopPageState extends State<TopPage> {
             () => currentbnb = index,
           )
         },
+        currentIndex: currentbnb,
         items: const [
           BottomNavigationBarItem(
             icon: Icon(Icons.list),
@@ -49,10 +49,10 @@ class _TopPageState extends State<TopPage> {
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.settings),
-            label: 'settings'
-          )
-        ]
-      )
+            label: 'settings',
+          ),
+        ],
+      ),
     );
   }
 }
