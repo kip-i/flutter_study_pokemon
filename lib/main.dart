@@ -1,21 +1,33 @@
 import 'package:flutter/material.dart';
 import './poke_list_item.dart';
+import './utils/theme_mode.dart';
 
 void main() {
   runApp(const MyApp());
 }
 
-class MyApp extends StatelessWidget {
+class MyApp extends StatefulWidget {
   const MyApp({Key? key}) : super(key: key);
+  @override
+  _MyAppState createState() => _MyAppState();
+}
+
+class _MyAppState extends State<MyApp> {
+  ThemeMode _themeMode = ThemeMode.system;
+
+  @override
+  void initState() {
+    super.initState();
+    loadThemeMode().then((val) => setState(() => _themeMode = val));
+  }
 
   @override
   Widget build(BuildContext context) {
-    ThemeMode mode = ThemeMode.light;
     return MaterialApp(
       title: 'Pokemon Flutter',
       theme: ThemeData.light(),
       darkTheme: ThemeData.dark(),
-      themeMode: mode,
+      themeMode: _themeMode,
       home: const TopPage(),
     );
   }
@@ -77,6 +89,13 @@ class Settings extends StatefulWidget {
 
 class _SettingsState extends State<Settings> {
   ThemeMode _themeMode = ThemeMode.system;
+
+  @override
+  void initState() {
+    super.initState();
+    loadThemeMode().then((val) => setState(() => _themeMode = val));
+  }
+
   @override
   Widget build(BuildContext context) {
     return ListView(
