@@ -23,7 +23,9 @@ class TopPage extends StatefulWidget {
   @override
   _TopPageState createState() => _TopPageState();
 }
+
 class _TopPageState extends State<TopPage> {
+  int currentbnb = 0;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -35,7 +37,11 @@ class _TopPageState extends State<TopPage> {
         ),
       ),
       bottomNavigationBar: BottomNavigationBar(
-        onTap: (index) => {},
+        onTap: (index) => {
+          setState(
+            () => currentbnb = index,
+          )
+        },
         items: const [
           BottomNavigationBarItem(
             icon: Icon(Icons.list),
@@ -45,9 +51,35 @@ class _TopPageState extends State<TopPage> {
             icon: Icon(Icons.settings),
             label: 'settings'
           )
-
         ]
       )
+    );
+  }
+}
+
+class PokeList extends StatelessWidget {
+  const PokeList({Key? key}) : super(key: key);
+  @override
+  Widget build(BuildContext context) {
+    return ListView.builder(
+      padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 16),
+      itemCount: 898,
+      itemBuilder: (context, index) => PokeListItem(index: index),
+    );
+  }
+}
+
+class Settings extends StatelessWidget {
+  const Settings({Key? key}) : super(key: key);
+  @override
+  Widget build(BuildContext context) {
+    return ListView(
+      children: const [
+        ListTile(
+          leading: Icon(Icons.lightbulb),
+          title: Text('Dark/Light Mode'),
+        ),
+      ],
     );
   }
 }
