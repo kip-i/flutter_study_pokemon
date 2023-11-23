@@ -1,9 +1,16 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import './poke_list_item.dart';
+//import './settings.dart';
+import './models/theme_mode.dart';
 import './utils/theme_mode.dart';
 
 void main() {
-  runApp(const MyApp());
+  runApp(ChangeNotifierProvider(
+    create: (context) => ThemeModeNotifier(),
+    child: const MyApp(),
+  ));
 }
 
 class MyApp extends StatefulWidget {
