@@ -69,8 +69,14 @@ class PokeList extends StatelessWidget {
   }
 }
 
-class Settings extends StatelessWidget {
+class Settings extends StatefulWidget {
   const Settings({Key? key}) : super(key: key);
+  @override
+  _SettingsState createState() => _SettingsState();
+}
+
+class _SettingsState extends State<Settings> {
+  ThemeMode _themeMode = ThemeMode.system;
   @override
   Widget build(BuildContext context) {
     return ListView(
@@ -78,11 +84,19 @@ class Settings extends StatelessWidget {
         ListTile(
           leading: const Icon(Icons.lightbulb),
           title: const Text('Dark/Light Mode'),
-          onTap: () => {
-            Navigator.of(context).push(MaterialPageRoute(
-              builder: (context) => const ThemeModeSelectionPage(),
-            )),
+          trailing: Text((_themeMode == ThemeMode.system)
+              ? 'System'
+              : (_themeMode == ThemeMode.dark ? 'Dark' : 'Light')),
+          // Push側, 受け取り
+          onTap: () async {
+            var ret = await Navigator.of(context).push<ThemeMode>(
+              MaterialPageRoute(
+                builder: (context) => ThemeModeSelectionPage(init: _themeMode),
+              ),
+            );
+            setState(() => _themeMode = ret!);
           },
+
         ),
       ],
     );
@@ -90,7 +104,11 @@ class Settings extends StatelessWidget {
 }
 
 class ThemeModeSelectionPage extends StatefulWidget {
-  const ThemeModeSelectionPage({Key? key}) : super(key: key);
+  final ThemeMode init;
+  const ThemeModeSelectionPage({
+      Key? key,
+      required this.init,
+    }) : super(key: key);
 
   @override
   _ThemeModeSelectionPageState createState() => _ThemeModeSelectionPageState();
@@ -104,10 +122,12 @@ class _ThemeModeSelectionPageState extends State<ThemeModeSelectionPage> {
       body: SafeArea(
         child: Column(
           children: [
+            // Pop側, 受け渡し
             ListTile(
               leading: IconButton(
                 icon: const Icon(Icons.arrow_back),
-                onPressed: () => Navigator.pop(context),
+                onPressed: () => Navigator.pop<ThemeMode>(
+                    context, ThemeMode.light), // 暫定でlight
               ),
             ),
             RadioListTile<ThemeMode>(
