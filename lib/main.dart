@@ -106,7 +106,6 @@ class _SettingsState extends State<Settings> {
           trailing: Text((_themeMode == ThemeMode.system)
               ? 'System'
               : (_themeMode == ThemeMode.dark ? 'Dark' : 'Light')),
-          // Push側, 受け取り
           onTap: () async {
             var ret = await Navigator.of(context).push<ThemeMode>(
               MaterialPageRoute(
@@ -114,8 +113,8 @@ class _SettingsState extends State<Settings> {
               ),
             );
             setState(() => _themeMode = ret!);
+            await saveThemeMode(_themeMode);
           },
-
         ),
       ],
     );
@@ -124,9 +123,9 @@ class _SettingsState extends State<Settings> {
 
 class ThemeModeSelectionPage extends StatefulWidget {
   const ThemeModeSelectionPage({
-      Key? key,
-      required this.init,
-    }) : super(key: key);
+    Key? key,
+    required this.init,
+  }) : super(key: key);
   final ThemeMode init;
 
   @override
@@ -147,29 +146,27 @@ class _ThemeModeSelectionPageState extends State<ThemeModeSelectionPage> {
       body: SafeArea(
         child: Column(
           children: [
-            // Pop側, 受け渡し
             ListTile(
               leading: IconButton(
                 icon: const Icon(Icons.arrow_back),
-                onPressed: () => Navigator.pop<ThemeMode>(
-                    context, _current), 
+                onPressed: () => Navigator.pop<ThemeMode>(context, _current),
               ),
             ),
             RadioListTile<ThemeMode>(
               value: ThemeMode.system,
-              groupValue: ThemeMode.system,
+              groupValue: _current,
               title: const Text('System'),
               onChanged: (val) => {setState(() => _current = val!)},
             ),
             RadioListTile<ThemeMode>(
               value: ThemeMode.dark,
-              groupValue: ThemeMode.system,
+              groupValue: _current,
               title: const Text('Dark'),
               onChanged: (val) => {setState(() => _current = val!)},
             ),
             RadioListTile<ThemeMode>(
               value: ThemeMode.light,
-              groupValue: ThemeMode.system,
+              groupValue: _current,
               title: const Text('Light'),
               onChanged: (val) => {setState(() => _current = val!)},
             ),
