@@ -4,6 +4,19 @@ import '../db/favorites.dart';
 class FavoritesNotifier extends ChangeNotifier {
   final List<Favorite> _favs = [];
 
+  FavoritesNotifier() {
+    syncDb();
+  }
+
+  void syncDb() async {
+    FavoritesDb.read().then(
+      (val) => _favs
+        ..clear()
+        ..addAll(val),
+    );
+    notifyListeners();
+  }
+
   List<Favorite> get favs => _favs;
 
   void toggle(Favorite fav) {
@@ -21,14 +34,27 @@ class FavoritesNotifier extends ChangeNotifier {
     return true;
   }
 
-  void add(Favorite fav) {
-    favs.add(fav);
-    notifyListeners();
+  void add(Favorite fav) async {
+    await FavoritesDb.create(fav);
+    syncDb();
   }
 
-  void delete(int id) {
-    favs.removeWhere((fav) => fav.pokeId == id);
-    notifyListeners();
-    // エラー処理あった方が良い
+  void delete(int id) async {
+    await FavoritesDb.delete(id);
+    syncDb();
+  }
+}
+
+class Favorite {
+  final int pokeId;
+
+  Favorite({
+    required this.pokeId,
+  });
+
+  Map<String, dynamic> toMap() {
+    return {
+      'id': pokeId,
+    };
   }
 }
