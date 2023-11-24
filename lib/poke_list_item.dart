@@ -28,12 +28,12 @@ class PokeListItem extends StatelessWidget {
           poke!.name,
           style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
         ),
-        subtitle: Text(poke!.types.first),
+        subtitle: Text(poke!.types.join(', ')),
         trailing: const Icon(Icons.navigate_next),
         onTap: () => {
           Navigator.of(context).push(
             MaterialPageRoute(
-              builder: (BuildContext context) => const PokeDetail(),
+              builder: (BuildContext context) => PokeDetail(poke: poke!),
             ),
           ),
         },
