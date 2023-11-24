@@ -3,6 +3,8 @@ import 'package:provider/provider.dart';
 import './models/pokemon.dart';
 import './models/favorite.dart';
 import './const/pokeapi.dart';
+import 'db/favorites.dart';
+
 
 class PokeDetail extends StatelessWidget {
   const PokeDetail({Key? key, required this.poke}) : super(key: key);
@@ -21,8 +23,12 @@ class PokeDetail extends StatelessWidget {
                   onPressed: () => Navigator.pop(context),
                 ),
                 trailing: IconButton(
-                  icon: const Icon(Icons.star_outline),
-                  onPressed: () => {},
+                  icon: favs.isExist(poke.id)
+                      ? const Icon(Icons.star, color: Colors.orangeAccent)
+                      : const Icon(Icons.star_outline),
+                  onPressed: () => {
+                    favs.toggle(Favorite(pokeId: poke.id)),
+                  },
                 ),
               ),
               const Spacer(),
