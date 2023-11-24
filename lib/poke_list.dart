@@ -60,25 +60,35 @@ class _PokeListState extends State<PokeList> {
 
   @override
   Widget build(BuildContext context) {
-    return Consumer<PokemonsNotifier>(
-      builder: (context, pokes, child) => ListView.builder(
-        padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 16),
-        itemCount: itemCount() + 1,
-        itemBuilder: (context, index) {
-          if (index == itemCount()) {
-            return OutlinedButton(
-              child: const Text('more'),
-              onPressed: () => {
-                setState(() => _currentPage++),
-              },
-            );
-          } else {
-            return PokeListItem(
-              poke: pokes.byId(itemId(index)),
-            );
-          }
-        },
-      ),
+    return Column(
+      children: [
+        IconButton(icon: const Icon(Icons.star), onPressed: () => {}),
+          Expanded(
+            child: Consumer<PokemonsNotifier>(
+              builder: (context, pokes, child) => ListView.builder(
+                padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 16),
+                itemCount: itemCount() + 1,
+                itemBuilder: (context, index) {
+                  if (index == itemCount()) {
+                    return OutlinedButton(
+                      child: const Text('more'),
+                      onPressed: isLastPage(_currentPage)
+                          ? null
+                          : () => {
+                              setState(()=> _currentPage++),
+                          },
+                    );
+                  } else {
+                    return PokeListItem(
+                      poke: pokes.byId(itemId(index)),
+                    );
+                  }
+                },
+              ),
+            )
+        )
+      ],
     );
+    
   }
 }
