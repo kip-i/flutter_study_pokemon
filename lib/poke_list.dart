@@ -3,7 +3,8 @@ import 'package:provider/provider.dart';
 import './models/pokemon.dart';
 import './const/pokeapi.dart';
 import './poke_list_item.dart';
-import './db/favorite.dart';
+import 'db/favorites.dart';
+import 'models/favorite.dart';
 
 class PokeList extends StatefulWidget {
   const PokeList({Key? key}) : super(key: key);
@@ -39,10 +40,10 @@ class _PokeListState extends State<PokeList> {
   }
 
   // 表示個数
-  int itemCount() {
-    int ret = _currentPage * pageSize;
-    if (isFavoriteMode && ret > favMock.length) {
-      ret = favMock.length;
+  int itemCount(int favsCount, int page) {
+    int ret = page * pageSize;
+    if (isFavoriteMode && ret > favsCount) {
+      ret = favsCount;
     }
     if (ret > pokeMaxId) {
       ret = pokeMaxId;
@@ -64,62 +65,69 @@ class _PokeListState extends State<PokeList> {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: [
-        Container(
-          height: 24,
-          alignment: Alignment.topRight,
-          child: IconButton(
-            padding: const EdgeInsets.all(0),
-            icon: const Icon(Icons.auto_awesome_outlined),
-            onPressed: () async {
-              var ret = await showModalBottomSheet<bool>(
-                context: context,
-                shape: const RoundedRectangleBorder(
-                  borderRadius: BorderRadius.only(
-                    topLeft: Radius.circular(40),
-                    topRight: Radius.circular(40),
+    return Consumer<FavoritesNotifier>(
+      builder: (context, favs, child) => Column(
+        children: [
+          Container(
+            height: 24,
+            alignment: Alignment.topRight,
+            child: IconButton(
+              padding: const EdgeInsets.all(0),
+              icon: const Icon(Icons.auto_awesome_outlined),
+              onPressed: () async {
+                var ret = await showModalBottomSheet<bool>(
+                  context: context,
+                  shape: const RoundedRectangleBorder(
+                    borderRadius: BorderRadius.only(
+                      topLeft: Radius.circular(40),
+                      topRight: Radius.circular(40),
+                    ),
                   ),
-                ),
-                builder: (BuildContext context) {
-                  return ViewModeBottomSheet(
-                    favMode: isFavoriteMode,
-                  );
-                },
-              );
-              if (ret != null && ret) {
-                changeMode(isFavoriteMode);
-              }
-            },
-          ),
-        ),
-        Expanded(
-          child: Consumer<PokemonsNotifier>(
-            builder: (context, pokes, child) => ListView.builder(
-              padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 16),
-              itemCount: itemCount() + 1,
-              itemBuilder: (context, index) {
-                if (index == itemCount()) {
-                  return OutlinedButton(
-                    child: const Text('more'),
-                    onPressed: isLastPage(_currentPage)
-                        ? null
-                        : () => {
-                            setState(()=> _currentPage++),
-                        },
-                  );
-                } else {
-                  return PokeListItem(
-                    poke: pokes.byId(itemId(index)),
-                  );
+                  builder: (BuildContext context) {
+                    return ViewModeBottomSheet(
+                      favMode: isFavoriteMode,
+                    );
+                  },
+                );
+                if (ret != null && ret) {
+                  changeMode(isFavoriteMode);
                 }
               },
             ),
-          )
-        ),
-      ],
+          ),
+          Expanded(
+            child: Consumer<PokemonsNotifier>(
+              builder: (context, pokes, child) {
+                if (itemCount(favs.favs.length, _currentPage) == 0){
+                  return const Text('no data');
+                } else {
+                  return ListView.builder(
+                    padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 16),
+                    itemCount: itemCount(favs.favs.length, _currentPage) + 1,
+                    itemBuilder: (context, index) {
+                      if (index == itemCount(favs.favs.length, _currentPage)) {
+                        return OutlinedButton(
+                          child: const Text('more'),
+                          onPressed: isLastPage(_currentPage)
+                              ? null
+                              : () => {
+                                  setState(()=> _currentPage++),
+                              },
+                        );
+                      } else {
+                        return PokeListItem(
+                          poke: pokes.byId(itemId(index)),
+                        );
+                      }
+                    },
+                  );
+                }
+              }
+            )
+          ),
+        ],
+      )
     );
-    
   }
 }
 
