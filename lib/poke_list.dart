@@ -67,7 +67,9 @@ class _PokeListState extends State<PokeList> {
           alignment: Alignment.topRight,
           child: IconButton(
             padding: const EdgeInsets.all(0),
-            icon: const Icon(Icons.star_outline),
+            icon: isFavoriteMode
+              ? const Icon(Icons.star, color: Colors.orangeAccent)
+              : const Icon(Icons.star_outline),
             onPressed: () => {setState(() => isFavoriteMode = !isFavoriteMode)},
           ),
         ),
