@@ -11,27 +11,30 @@ class PokeList extends StatefulWidget {
 }
 
 class _PokeListState extends State<PokeList> {
-  static const int more = 30;
-  int pokeCount = more;
+  static const int pageSize = 30;
+  int _currentPage = 1;
+
+  // 表示個数
+  int itemCount() {
+    int ret = _currentPage * pageSize;
+    if (ret > pokeMaxId) {
+      ret = pokeMaxId;
+    }
+    return ret;
+  }
+
   @override
   Widget build(BuildContext context) {
     return Consumer<PokemonsNotifier>(
       builder: (context, pokes, child) => ListView.builder(
         padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 16),
-        itemCount: pokeCount + 1, // pokeMaxId,
+        itemCount: itemCount() + 1,
         itemBuilder: (context, index) {
-          if (index == pokeCount) {
+          if (index == itemCount()) {
             return OutlinedButton(
               child: const Text('more'),
               onPressed: () => {
-                setState(
-                  () {
-                    pokeCount = pokeCount + more;
-                    if (pokeCount > pokeMaxId) {
-                      pokeCount = pokeMaxId;
-                    }
-                  },
-                )
+                setState(() => _currentPage++),
               },
             );
           } else {
