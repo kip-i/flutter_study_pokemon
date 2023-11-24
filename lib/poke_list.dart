@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 import './models/pokemon.dart';
 import './const/pokeapi.dart';
 import './poke_list_item.dart';
+import './db/favorite.dart';
 
 class PokeList extends StatefulWidget {
   const PokeList({Key? key}) : super(key: key);
@@ -12,13 +13,47 @@ class PokeList extends StatefulWidget {
 
 class _PokeListState extends State<PokeList> {
   static const int pageSize = 30;
+  //bool isFavoriteMode = false;
+  bool isFavoriteMode = true;
   int _currentPage = 1;
+
+  List<Favorite> favMock = [
+    Favorite(pokeId: 1),
+    Favorite(pokeId: 4),
+    Favorite(pokeId: 7),
+    Favorite(pokeId: 25),
+  ];
+
+  bool isLastPage(int page) {
+    if (isFavoriteMode) {
+      if (_currentPage * pageSize < favMock.length) {
+        return false;
+      }
+      return true;
+    } else {
+      if (_currentPage * pageSize < pokeMaxId) {
+        return false;
+      }
+      return true;
+    }
+  }
 
   // 表示個数
   int itemCount() {
     int ret = _currentPage * pageSize;
+    if (isFavoriteMode && ret > favMock.length) {
+      ret = favMock.length;
+    }
     if (ret > pokeMaxId) {
       ret = pokeMaxId;
+    }
+    return ret;
+  }
+
+  int itemId(int index) {
+    int ret = index + 1; // 通常モード
+    if (isFavoriteMode) {
+      ret = favMock[index].pokeId;
     }
     return ret;
   }
@@ -39,7 +74,7 @@ class _PokeListState extends State<PokeList> {
             );
           } else {
             return PokeListItem(
-              poke: pokes.byId(index + 1),
+              poke: pokes.byId(itemId(index)),
             );
           }
         },
